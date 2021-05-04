@@ -7,7 +7,7 @@ use Illuminate\Http\Request;
 
 class AllController extends Controller
 {
-    public function index(){
+    public function home(){
         $genres = Genre::all();
         return view('home', compact('genres'));
     }

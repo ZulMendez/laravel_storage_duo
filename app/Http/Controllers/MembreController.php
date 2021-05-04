@@ -9,13 +9,13 @@ use Illuminate\Http\Request;
 class MembreController extends Controller
 {
     public function index(){
-        $genres = Genre::all();
-        $membre = Membre::all();
-        return view('admin.membres.membre', compact('genres', 'membre'));
+        $membres = Membre::all();
+        return view('admin.membres.membre', compact('membres'));
     }
     public function create(){
         $genres = Genre::all();
-        return view('admin.membres.create', compact('genres'));
+        $membres = Membre::all();
+        return view('admin.membres.create', compact('genres', 'membres'));
     }
     public function store(Request $request){
         request()->validate([
@@ -25,11 +25,13 @@ class MembreController extends Controller
             "genre" => ["required"]
         ]);
         // storage via input
-        $request->file('image')->storePublicly('img/','public');
+        $membre = new Membre();
+        if ($request->hasFile('image')){
+            $request->file('image')->storePublicly('img/', 'public');
+            $membre->image = $request->file('image')->hashName();
+        }
 
         // DB
-        $membre = new Membre();
-        $membre->image = $request->file('image')->hashName();
         $membre->nom = $request->nom;
         $membre->age = $request->age;
         $membre->genre = $request->genre;
